@@ -1,0 +1,50 @@
+= Crosstool-NG Newlib Examples
+:idprefix:
+:idseparator: -
+:sectanchors:
+:sectlinks:
+:sectnumlevels: 6
+:sectnums:
+:toc: macro
+:toclevels: 6
+:toc-title:
+
+Run one command, get bare metal arm UART minimal examples that run on QEMU, written in C using the C standard library via Newlib, with a clean toolchain built with Crosstool-NG. Tested on Ubuntu 18.04.
+
+== Getting started
+
+....
+./build-ctng && ./build-sample && ./run
+....
+
+Outcome: QEMU starts, go to the terminal and type the keys:
+
+* `'a'`
+* `'b'`
+
+and watch QEMU reply as you type with:
+
+....
+97: a
+new alloc of 1 bytes at address 0x1A2E0
+Heap end = 0x1B000
+98: b
+new alloc of 2 bytes at address 0x1A2E0
+Heap end = 0x1B000
+....
+
+This example illustrates the following syscall implementations:
+
+* `read` to get user UART input
+* `write` to give UARToutput
+* `sbrk` for `malloc`
+
+== Why this is cool
+
+Usually, when you have to explain something, it is already not cool, but here goes in any case.
+
+This allows you to run C programs without an operating system, directly on bare metal, and use a subset of the C standard library.
+
+This allows you to run possibly unmodified C programs directly on bare metal.
+
+Furthermore, we build a completely pristine GCC from source via crosstool-ng, therefore dispensing any distro provided blobs.

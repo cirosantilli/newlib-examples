@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+cd crosstool-ng/
+./bootstrap
+./configure --enable-local
+make -j`nproc`
+./ct-ng arm-unknown-eabi
+env -u LD_LIBRARY_PATH ./ct-ng build -j`nproc`
