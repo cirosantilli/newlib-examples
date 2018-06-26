@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eux
+cd balau-qemu-newlib
+prefix=arm-none-eabi-
+"${prefix}gcc" -mcpu=cortex-a8 -c -o test.o test.c
+"${prefix}gcc" -c -g -O3 -I . -std=c99 -o startup.o startup.s
+"${prefix}gcc" -mcpu=cortex-a8 -nostartfiles -c -o syscalls.o syscalls.c
+"${prefix}gcc" -nostartfiles -Ttest.ld -o test.elf startup.o test.o syscalls.o
+"${prefix}objcopy" -O binary test.elf test.bin
