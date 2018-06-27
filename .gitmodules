@@ -1,3 +1,6 @@
 [submodule "crosstool-ng"]
 	path = crosstool-ng
 	url = https://github.com/crosstool-ng/crosstool-ng
+[submodule "qemu"]
+	path = qemu
+	url = git://git.qemu.org/qemu.git

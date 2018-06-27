@@ -14,7 +14,10 @@ Run one command, get bare metal arm UART minimal examples that run on QEMU, writ
 == Getting started
 
 ....
-./build-ctng && ./build-sample && ./run
+git clone https://github.com/cirosantilli/newlib-examples
+cd newlib-examples
+git submodule update --recursive
+./build-ctng && ./build-qemu && ./build-samples && ./run
 ....
 
 Outcome: QEMU starts, go to the terminal and type the keys:
@@ -41,12 +44,12 @@ This example illustrates the following syscall implementations:
 
 == Ubuntu distro toolchain
 
-If you are really lazy, and don't want to wait 10 minutes for the toolchain to build, you can also do just:
+If you are really lazy, and don't want to wait 10 minutes for the toolchain or QEMU to build, you can also do just:
 
 ....
-sudo apt-get install gcc-arm-none-eabi
-./build-sample -p arm-none-eabi-
-./run
+sudo apt-get install gcc-arm-none-eabi qemu-system-arm
+./build-samples -p arm-none-eabi-
+./run -h
 ....
 
 Shame on you.

@@ -1,3 +1,22 @@
 #!/usr/bin/env bash
-cd balau-qemu-newlib
-qemu-system-arm -M realview-pb-a8 -serial stdio -kernel test.bin
+set -eu
+host=false
+OPTIND=1
+while getopts h OPT; do
+  case "$OPT" in
+    h)
+      host=true
+      ;;
+    ?)
+      exit 2
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if "$host"; then
+  qemu_exec=qemu-system-arm
+else
+  qemu_exec="${root_dir}/qemu/arm-softmmu/qemu-system-arm"
+fi
+"$qemu_exec" -M realview-pb-a8 -serial stdio -kernel "${root_dir}/balau-qemu-newlib/test.bin"
