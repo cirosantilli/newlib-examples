@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eux
+set -eu
 root_dir="$(cd "$(dirname"${BASH_SOURCE[0]}")" && pwd)"
 prefix=arm-unknown-eabi-
 OPTIND=1

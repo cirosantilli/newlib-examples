@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eu
 root_dir="$(cd "$(dirname"${BASH_SOURCE[0]}")" && pwd)"
 bit64=false
 OPTIND=1
@@ -19,8 +20,9 @@ cd crosstool-ng/
 ./configure --enable-local
 make -j`nproc`
 if "$bit64"; then
-  cp "${root_dir}/64_defconfig" .config
-  ./ct-ng oldconfig
+  cp "${root_dir}/ctng_defconfig/64" defconfig
+  ./ct-ng defconfig
+  rm defconfig
 else
   ./ct-ng arm-unknown-eabi
 fi
