@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
 set -eux
-ctng_path="$(pwd)/crosstool-ng"
-ctng_build_path="${ctng_path}/.build/arm-unknown-eabi"
-newlib_include_path="${ctng_path}/.build/src/newlib-2.5.0.20171222/newlib/libc/include"
-export PATH="${ctng_build_path}/buildtools/bin/:${PATH}"
-cd balau-qemu-newlib
+root_dir="$(cd "$(dirname"${BASH_SOURCE[0]}")" && pwd)"
 prefix=arm-unknown-eabi-
-"${prefix}gcc" -mcpu=cortex-a8 -I "${newlib_include_path}" -c -o test.o test.c
-"${prefix}gcc" -c -g -O3 -I . -std=c99 -o startup.o startup.s
-"${prefix}gcc" -mcpu=cortex-a8 -nostartfiles -I "${newlib_include_path}" -c -o syscalls.o syscalls.c
-"${prefix}gcc" -nostdlib -nostartfiles -Ttest.ld -o test.elf startup.o test.o syscalls.o "${ctng_build_path}/build/build-libc/arm-unknown-eabi/newlib/libc.a" "${ctng_build_path}/buildtools/lib/gcc/arm-unknown-eabi/8.1.0/libgcc.a"
+OPTIND=1
+while getopts p: OPT; do
+  case "$OPT" in
+    p)
+      prefix="$OPTARG"
+      ;;
+    ?)
+      exit 2
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+export PATH="${root_dir}/out/ctng/arm-unknown-eabi/bin:${PATH}"
+cd balau-qemu-newlib
+"${prefix}gcc" -mcpu=cortex-a8 -c -o test.o test.c
+"${prefix}gcc" -c -g -O3 -std=c99 -o startup.o startup.s
+"${prefix}gcc" -mcpu=cortex-a8 -nostartfiles -c -o syscalls.o syscalls.c
+"${prefix}gcc" -nostartfiles -Ttest.ld -o test.elf startup.o test.o syscalls.o
 "${prefix}objcopy" -O binary test.elf test.bin

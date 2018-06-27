@@ -1,7 +1,27 @@
 #!/usr/bin/env bash
+root_dir="$(cd "$(dirname"${BASH_SOURCE[0]}")" && pwd)"
+bit64=false
+OPTIND=1
+while getopts 6 OPT; do
+  case "$OPT" in
+    6)
+      bit64=true
+      ;;
+    ?)
+      exit 2
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+export CT_PREFIX="${root_dir}/out/ctng"
 cd crosstool-ng/
 ./bootstrap
 ./configure --enable-local
 make -j`nproc`
-./ct-ng arm-unknown-eabi
+if "$bit64"; then
+  cp "${root_dir}/64_defconfig" .config
+  ./ct-ng oldconfig
+else
+  ./ct-ng arm-unknown-eabi
+fi
 env -u LD_LIBRARY_PATH ./ct-ng build -j`nproc`

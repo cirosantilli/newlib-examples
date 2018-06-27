@@ -45,11 +45,11 @@ If you are really lazy, and don't want to wait 10 minutes for the toolchain to b
 
 ....
 sudo apt-get install gcc-arm-none-eabi
-./build-sample-ubuntu
+./build-sample -p arm-none-eabi-
 ./run
 ....
 
-TODO: that toolchain does have one advantage: it places the includes and `libc.a` on the right paths that get used automatically. How to do that with Crosstool-NG? https://github.com/crosstool-ng/crosstool-ng/issues/995
+Shame on you.
 
 == Why this is cool
 
