@@ -39,6 +39,18 @@ This example illustrates the following syscall implementations:
 * `write` to give UARToutput
 * `sbrk` for `malloc`
 
+== Ubuntu distro toolchain
+
+If you are really lazy, and don't want to wait 10 minutes for the toolchain to build, you can also do just:
+
+....
+sudo apt-get install gcc-arm-none-eabi
+./build-sample-ubuntu
+./run
+....
+
+TODO: that toolchain does have one advantage: it places the includes and `libc.a` on the right paths that get used automatically. How to do that with Crosstool-NG? https://github.com/crosstool-ng/crosstool-ng/issues/995
+
 == Why this is cool
 
 Usually, when you have to explain something, it is already not cool, but here goes in any case.
