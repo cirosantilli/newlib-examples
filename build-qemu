@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
-set -eu
-cd qemu
-./configure \
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
+OPTIND=1
+while getopts a: OPT; do
+  case "$OPT" in
+    a)
+      common_arch="$OPTARG"
+      ;;
+    ?)
+      exit 2
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+common_setup
+mkdir -p "$common_qemu_out_dir"
+cd "$common_qemu_out_dir"
+"${common_qemu_dir}/configure" \
   --enable-debug \
-  --target-list=x86_64-softmmu,arm-softmmu,aarch64-softmmu \
+  --target-list="${common_qemu_target}" \
   "$@" \
 ;
-time make -j`nproc`
+make -j`nproc`

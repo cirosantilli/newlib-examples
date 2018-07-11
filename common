@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -eu
+common_arch=arm
+common_prefix=
+common_setup() {
+  case "$common_arch" in
+    a|arm)
+      common_arch=arm
+      common_qemu_target=arm-softmmu
+      common_mcpu=cortex-a8
+      ;;
+    A|aarch64)
+      common_arch=aarch64
+      common_qemu_target=aarch64-softmmu
+      common_mcpu=cortex-a75
+      ;;
+    *)
+      printf "unknown arch: ${arch}\n" 1>&2
+      exit 2
+      ;;
+  esac
+  if [ -z "${common_prefix}" ]; then
+    case "$common_arch" in
+      a|arm)
+        common_prefix=arm-unknown-eabi
+        ;;
+      A|aarch64)
+        common_prefix=aarch64-unknown-elf
+        ;;
+    esac
+  fi
+  common_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    common_out_dir="${common_root_dir}/out"
+      common_out_arch_dir="${common_out_dir}/${common_arch}"
+        common_samples_out_dir="${common_out_arch_dir}/samples"
+          common_bin="${common_samples_out_dir}/test.bin"
+          common_elf="${common_samples_out_dir}/test.elf"
+      common_qemu_out_dir="${common_out_dir}/qemu"
+    common_qemu_dir="${common_root_dir}/qemu"
+}

@@ -3,14 +3,13 @@
 
 extern char *heap_end; /* Defined in syscalls.c */
 
-void c_entry() {
+void main() {
     char c;
     char *ptr = NULL;
     size_t alloc_size = 1;
-    do {        
+    do {
         c =getchar();
         printf("%d: %c\n", c, c);
-
         ptr = realloc(ptr, alloc_size);
         if(ptr == NULL) {
             puts("Out of memory!\nProgram halting.");
@@ -22,4 +21,3 @@ void c_entry() {
         }
     } while (1);
 }
-

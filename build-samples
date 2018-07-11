@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-set -eu
-root_dir="$(cd "$(dirname"${BASH_SOURCE[0]}")" && pwd)"
-prefix=arm-unknown-eabi-
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
 OPTIND=1
-while getopts p: OPT; do
+while getopts a:p: OPT; do
   case "$OPT" in
+    a)
+      common_arch="$OPTARG"
+      ;;
     p)
-      prefix="$OPTARG"
+      common_prefix="$OPTARG"
       ;;
     ?)
       exit 2
@@ -14,10 +15,18 @@ while getopts p: OPT; do
   esac
 done
 shift "$(($OPTIND - 1))"
-export PATH="${root_dir}/out/ctng/arm-unknown-eabi/bin:${PATH}"
-cd balau-qemu-newlib
-"${prefix}gcc" -mcpu=cortex-a8 -c -o test.o test.c
-"${prefix}gcc" -c -g -O3 -std=c99 -o startup.o startup.s
-"${prefix}gcc" -mcpu=cortex-a8 -nostartfiles -c -o syscalls.o syscalls.c
-"${prefix}gcc" -nostartfiles -Ttest.ld -o test.elf startup.o test.o syscalls.o
-"${prefix}objcopy" -O binary test.elf test.bin
+common_setup
+export PATH="${common_root_dir}/out/ctng/${common_prefix}/bin:${PATH}"
+mkdir -p "${common_samples_out_dir}"
+"${common_prefix}-gcc" -mcpu="${common_mcpu}" -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
+"${common_prefix}-gcc" -c -g -O3 -std=c99 -o "${common_samples_out_dir}/startup.o" "${common_root_dir}/startup.S"
+"${common_prefix}-gcc" -mcpu="${common_mcpu}" -nostartfiles -c -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
+"${common_prefix}-gcc" \
+  -nostartfiles \
+  -o "$common_elf" \
+  -T"${common_root_dir}/link.ld" \
+  "${common_samples_out_dir}/startup.o" \
+  "${common_samples_out_dir}/main.o" \
+  "${common_samples_out_dir}/syscalls.o" \
+;
+"${common_prefix}-objcopy" -O binary "$common_elf" "$common_bin"

@@ -15,12 +15,12 @@ typedef volatile struct {
     uint32_t IBRD;
     uint32_t FBRD;
     uint32_t LCR_H;
-    uint32_t CR;    
+    uint32_t CR;
     uint32_t IFLS;
     uint32_t IMSC;
     const uint32_t RIS;
     const uint32_t MIS;
     uint32_t ICR;
-    uint32_t DMACR;    
+    uint32_t DMACR;
 } pl011_T;
 

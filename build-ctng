@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-set -eu
-root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
 bit64=false
 OPTIND=1
-while getopts 6 OPT; do
+while getopts a: OPT; do
   case "$OPT" in
-    6)
-      bit64=true
+    a)
+      common_arch="$OPTARG"
       ;;
     ?)
       exit 2
@@ -14,13 +13,14 @@ while getopts 6 OPT; do
   esac
 done
 shift "$(($OPTIND - 1))"
-export CT_PREFIX="${root_dir}/out/ctng"
+common_setup
+export CT_PREFIX="${common_root_dir}/out/ctng"
 cd crosstool-ng/
 ./bootstrap
 ./configure --enable-local
 make -j`nproc`
 if "$bit64"; then
-  cp "${root_dir}/ctng_defconfig/64" defconfig
+  cp "${common_root_dir}/ctng_defconfig/64" defconfig
   ./ct-ng defconfig
   rm defconfig
 else
