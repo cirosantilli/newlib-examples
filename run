@@ -2,8 +2,11 @@
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
 host=false
 OPTIND=1
-while getopts h OPT; do
+while getopts a:h OPT; do
   case "$OPT" in
+    a)
+      common_arch="$OPTARG"
+      ;;
     h)
       host=true
       ;;
@@ -13,10 +16,11 @@ while getopts h OPT; do
   esac
 done
 shift "$(($OPTIND - 1))"
+common_setup
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if "$host"; then
-  qemu_exec=qemu-system-arm
+  qemu_exec="$common_qemu_exec_basename"
 else
-  qemu_exec="${common_root_dir}/qemu/arm-softmmu/qemu-system-arm"
+  qemu_exec="$common_qemu_exec"
 fi
 "$qemu_exec" -M realview-pb-a8 -serial stdio -kernel "$common_bin"

@@ -6,12 +6,10 @@ common_setup() {
   case "$common_arch" in
     a|arm)
       common_arch=arm
-      common_qemu_target=arm-softmmu
       common_mcpu=cortex-a8
       ;;
     A|aarch64)
       common_arch=aarch64
-      common_qemu_target=aarch64-softmmu
       common_mcpu=cortex-a75
       ;;
     *)
@@ -37,4 +35,7 @@ common_setup() {
           common_elf="${common_samples_out_dir}/test.elf"
       common_qemu_out_dir="${common_out_dir}/qemu"
     common_qemu_dir="${common_root_dir}/qemu"
+  common_qemu_exec_basename="qemu-system-${common_arch}"
+  common_qemu_exec="${common_qemu_out_dir}/${common_arch}-softmmu/${common_qemu_exec_basename}"
+  common_qemu_target="${common_arch}-softmmu"
 }
