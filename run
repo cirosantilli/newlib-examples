@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
+gem5=false
 host=false
 OPTIND=1
-while getopts a:h OPT; do
+while getopts a:hgt OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
       ;;
+    g)
+      gem5=true
+      ;;
     h)
       host=true
+      ;;
+    t)
+      common_gem5_build_type="$OPTARG"
       ;;
     ?)
       exit 2
@@ -18,9 +25,30 @@ done
 shift "$(($OPTIND - 1))"
 common_setup
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if "$host"; then
-  qemu_exec="$common_qemu_exec_basename"
+if "$gem5"; then
+
+gem5_build_dir="${1:-../gem5}"
+if [ $# -gt 1 ]; then
+  gem5_src_dir="$2"
 else
-  qemu_exec="$common_qemu_exec"
+  gem5_src_dir="$gem5_build_dir"
 fi
-"$qemu_exec" -M realview-pb-a8 -serial stdio -kernel "$common_bin"
+"${common_gem5_exec}" \
+  -d "${common_gem5_m5out_dir}" \
+  --debug-file=trace.txt \
+  --debug-flags='Exec' \
+  "${common_gem5_dir}/configs/example/fs.py" \
+  --bare-metal \
+  --disk-image="${common_gem5_fake_iso}" \
+  --kernel="${common_bin}" \
+  --machine-type=RealView_PBX \
+  --mem-size=256MB \
+;
+else
+  if "$host"; then
+    qemu_exec="$common_qemu_exec_basename"
+  else
+    qemu_exec="$common_qemu_exec"
+  fi
+  "$qemu_exec" -M realview-pb-a8 -serial stdio -kernel "$common_bin"
+fi

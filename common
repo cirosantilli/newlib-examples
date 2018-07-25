@@ -2,15 +2,23 @@
 set -eu
 common_arch=arm
 common_prefix=
+common_gem5_build_type=opt
 common_setup() {
   case "$common_arch" in
     a|arm)
       common_arch=arm
       common_mcpu=cortex-a8
+      common_gem5_arch=ARM
       ;;
     A|aarch64)
       common_arch=aarch64
       common_mcpu=cortex-a75
+      common_gem5_arch=ARM
+      ;;
+    x|x86_64)
+      common_arch=x86_64
+      common_mcpu=TODO
+      common_gem5_arch=X86
       ;;
     *)
       printf "unknown arch: ${arch}\n" 1>&2
@@ -33,7 +41,14 @@ common_setup() {
         common_samples_out_dir="${common_out_arch_dir}/samples"
           common_bin="${common_samples_out_dir}/test.bin"
           common_elf="${common_samples_out_dir}/test.elf"
+        common_gem5_out_dir="${common_out_arch_dir}/gem5"
+          common_gem5_build_dir="${common_gem5_out_dir}/build"
+            common_gem5_exec="${common_gem5_build_dir}/${common_gem5_arch}/gem5.${common_gem5_build_type}"
+          common_gem5_m5out_dir="${common_gem5_out_dir}/m5out"
+      common_gem5_fake_iso="${common_out_dir}/fake.iso"
+      common_gem5_m5term="${common_out_dir}/m5term"
       common_qemu_out_dir="${common_out_dir}/qemu"
+    common_gem5_dir="${common_root_dir}/gem5"
     common_qemu_dir="${common_root_dir}/qemu"
   common_qemu_exec_basename="qemu-system-${common_arch}"
   common_qemu_exec="${common_qemu_out_dir}/${common_arch}-softmmu/${common_qemu_exec_basename}"

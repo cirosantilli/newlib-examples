@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
+common_setup
+offset="${1:-0}"
+base=3456
+"${common_gem5_m5term}" localhost $(($base + $offset))

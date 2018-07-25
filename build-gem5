@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
+arch=aarch64
+build_type=opt
+OPTIND=1
+while getopts a:t: OPT; do
+  case "$OPT" in
+    a)
+      common_arch="$OPTARG"
+      ;;
+    t)
+      common_gem5_build_type="$OPTARG"
+      ;;
+    ?)
+      exit 2
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+common_setup
+export PATH="/usr/lib/ccache:${PATH}"
+cd "${common_gem5_dir}"
+mkdir -p "${common_gem5_build_dir}"
+scons -j "$(nproc)" --ignore-style "${common_gem5_exe}"
+make -C util/term
+cp util/term/m5term "${common_gem5_m5term}"
+touch "${common_gem5_fake_iso}"

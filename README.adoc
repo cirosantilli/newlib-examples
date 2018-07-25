@@ -13,6 +13,8 @@ Run one command, get bare metal arm UART minimal examples that run on QEMU, writ
 
 == Getting started
 
+Clone, build and run on QEMU:
+
 ....
 git clone https://github.com/cirosantilli/newlib-examples
 cd newlib-examples
@@ -41,6 +43,19 @@ This example illustrates the following syscall implementations:
 * `read` to get user UART input
 * `write` to give UARToutput
 * `sbrk` for `malloc`
+
+TODO WIP: Run on `gem5` instead of QEMU:
+
+....
+./build-gem5
+./run -g
+....
+
+On another shell:
+
+....
+./gem5-shell
+....
 
 == Ubuntu distro toolchain
 
