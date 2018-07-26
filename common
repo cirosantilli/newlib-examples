@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 set -eu
 common_arch=arm
-common_prefix=
+common_gdb_port=1234
 common_gem5_build_type=opt
+common_prefix=
 common_setup() {
   case "$common_arch" in
     a|arm)
       common_arch=arm
       common_mcpu=cortex-a8
       common_gem5_arch=ARM
+      common_qemu_machine=realview-pb-a8
       ;;
     A|aarch64)
       common_arch=aarch64
       common_mcpu=cortex-a75
       common_gem5_arch=ARM
+      common_qemu_machine=TODO
       ;;
     x|x86_64)
       common_arch=x86_64

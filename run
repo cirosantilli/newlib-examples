@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
+debug=false
 gem5=false
 host=false
 OPTIND=1
-while getopts a:hgt OPT; do
+while getopts a:dhgt OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
+      ;;
+    d)
+      debug=true
       ;;
     g)
       gem5=true
@@ -46,12 +50,18 @@ cmd="\
 --mem-size=256MB \\
 "
 else
+  if "$debug"; then
+    debug_flags="-S -gdb tcp::${common_gdb_port}"
+  else
+    debug_flags=
+  fi
   if "$host"; then
     qemu_exec="$common_qemu_exec_basename"
   else
     qemu_exec="$common_qemu_exec"
   fi
-  cmd="'$qemu_exec' -M realview-pb-a8 -serial stdio -kernel '$common_bin'"
+  cmd="'${qemu_exec}' -M '${common_qemu_machine}' -kernel '${common_bin}' -serial stdio ${debug_flags}"
 fi
+cmd="${cmd} $@"
 echo "$cmd"
 eval "$cmd"
