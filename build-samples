@@ -17,11 +17,14 @@ done
 shift "$(($OPTIND - 1))"
 common_setup
 export PATH="${common_ctng_bin_dir}:${PATH}"
+CFLAGS="-ggdb3 -mcpu=${common_mcpu} -O0"
 mkdir -p "${common_samples_out_dir}"
-"${common_prefix}-gcc" -mcpu="${common_mcpu}" -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
-"${common_prefix}-gcc" -c -g -O3 -std=c99 -o "${common_samples_out_dir}/startup.o" "${common_root_dir}/startup.S"
-"${common_prefix}-gcc" -mcpu="${common_mcpu}" -nostartfiles -c -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
+"${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
+"${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/startup.o" -std=c99 "${common_root_dir}/startup.S"
+"${common_prefix}-gcc" ${CFLAGS} -c -nostartfiles -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
 "${common_prefix}-gcc" \
+  ${CFLAGS} \
+  -ggdb3 \
   -nostartfiles \
   -o "$common_elf" \
   -T"${common_root_dir}/link.ld" \

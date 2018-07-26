@@ -40,6 +40,12 @@ new alloc of 2 bytes at address 0x1A2E0
 Heap end = 0x1B000
 ....
 
+To exit enter:
+
+....
+Ctrl-A X
+....
+
 This example illustrates the following Newlib syscall implementations:
 
 * `read` to get user UART input

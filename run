@@ -51,7 +51,8 @@ cmd="\
 "
 else
   if "$debug"; then
-    debug_flags="-S -gdb tcp::${common_gdb_port}"
+    debug_flags="-S -gdb tcp::${common_gdb_port} \\
+"
   else
     debug_flags=
   fi
@@ -60,7 +61,13 @@ else
   else
     qemu_exec="$common_qemu_exec"
   fi
-  cmd="'${qemu_exec}' -M '${common_qemu_machine}' -kernel '${common_bin}' -serial stdio ${debug_flags}"
+  cmd="\
+'${qemu_exec}' \\
+-M '${common_qemu_machine}' \\
+-kernel '${common_bin}' \\
+-serial mon:stdio \\
+${debug_flags} \
+"
 fi
 cmd="${cmd} $@"
 echo "$cmd"

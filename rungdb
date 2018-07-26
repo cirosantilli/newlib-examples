@@ -15,6 +15,7 @@ shift "$(($OPTIND - 1))"
 common_setup
 cmd="\
 '${common_ctng_bin_dir}/${common_prefix}-gdb' \\
+-q \\
 -ex 'target remote localhost:${common_gdb_port}' \\
 '${common_elf}' \\
 "
