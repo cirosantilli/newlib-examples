@@ -52,6 +52,59 @@ This example illustrates the following Newlib syscall implementations:
 * `write` to give UART output
 * `sbrk` for `malloc`
 
+=== GDB
+
+TODO get working.
+
+Shell 1:
+
+....
+./run -d
+....
+
+Shell 2:
+
+....
+./rungdb
+....
+
+Now QEMU is at the instruction: `0x70000000`.
+
+If I do:
+
+....
+b mystart
+c
+....
+
+it never breaks there.
+
+But if I do:
+
+....
+x/16i 0x10000
+....
+
+it shows the correct dissassembly as in `mystart`, so the memory was loaded there.
+
+And if I do:
+
+....
+set $pc = 0x10000
+....
+
+everything works normally from there on!
+
+Howver:
+
+....
+x/16i $pc
+....
+
+does not show the instructions from `mystart`
+
+So how is that possible? It is as if QEMU were making two copies of my assembly and starting out at a custom bootloader code, and then using the second copy of code instead of the one with the addresses of the object file.
+
 === gem5
 
 Run on `gem5` instead of QEMU:
