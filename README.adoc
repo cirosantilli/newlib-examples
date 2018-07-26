@@ -11,6 +11,8 @@
 
 Run one command, get bare metal arm UART minimal examples that run on QEMU or gem5, written in C using the C standard library via Newlib, with a clean toolchain built with Crosstool-NG. Tested on Ubuntu 18.04.
 
+toc::[]
+
 == Getting started
 
 Clone, build and run on QEMU:
@@ -38,11 +40,13 @@ new alloc of 2 bytes at address 0x1A2E0
 Heap end = 0x1B000
 ....
 
-This example illustrates the following syscall implementations:
+This example illustrates the following Newlib syscall implementations:
 
 * `read` to get user UART input
-* `write` to give UARToutput
+* `write` to give UART output
 * `sbrk` for `malloc`
+
+=== gem5
 
 Run on `gem5` instead of QEMU:
 
@@ -56,6 +60,21 @@ On another shell:
 ....
 ./gem5-shell
 ....
+
+TODO: this is printing newlines without automatic carriage return `\r` as in:
+
+....
+enter a character
+                 got: a
+....
+
+We use `m5term` by default, and if we try `telnet` instead:
+
+....
+telnet localhost 3456
+....
+
+it does add the carriage returns automatically.
 
 == Ubuntu distro toolchain
 
