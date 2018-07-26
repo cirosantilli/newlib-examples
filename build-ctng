@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
-bit64=false
 OPTIND=1
 while getopts a: OPT; do
   case "$OPT" in
@@ -14,16 +13,12 @@ while getopts a: OPT; do
 done
 shift "$(($OPTIND - 1))"
 common_setup
-export CT_PREFIX="${common_root_dir}/out/ctng"
+export CT_PREFIX="${common_ctng_out_dir}"
 cd crosstool-ng/
 ./bootstrap
 ./configure --enable-local
 make -j`nproc`
-if "$bit64"; then
-  cp "${common_root_dir}/ctng_defconfig/64" defconfig
-  ./ct-ng defconfig
-  rm defconfig
-else
-  ./ct-ng arm-unknown-eabi
-fi
+cp "${common_root_dir}/ctng_defconfig/${common_arch}" defconfig
+./ct-ng defconfig
+rm defconfig
 env -u LD_LIBRARY_PATH ./ct-ng build -j`nproc`

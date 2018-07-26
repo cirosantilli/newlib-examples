@@ -16,7 +16,7 @@ while getopts a:p: OPT; do
 done
 shift "$(($OPTIND - 1))"
 common_setup
-export PATH="${common_root_dir}/out/ctng/${common_prefix}/bin:${PATH}"
+export PATH="${common_ctng_bin_dir}:${PATH}"
 mkdir -p "${common_samples_out_dir}"
 "${common_prefix}-gcc" -mcpu="${common_mcpu}" -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
 "${common_prefix}-gcc" -c -g -O3 -std=c99 -o "${common_samples_out_dir}/startup.o" "${common_root_dir}/startup.S"

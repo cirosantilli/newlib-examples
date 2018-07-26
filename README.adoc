@@ -76,7 +76,7 @@ telnet localhost 3456
 
 it does add the carriage returns automatically.
 
-== Ubuntu distro toolchain
+=== Ubuntu distro toolchain
 
 If you are really lazy, and don't want to wait 10 minutes for the toolchain or QEMU to build, you can also do just:
 
@@ -97,3 +97,18 @@ This allows you to run C programs without an operating system, directly on bare 
 This allows you to run possibly unmodified C programs directly on bare metal.
 
 Furthermore, we build a completely pristine GCC from source via crosstool-ng, therefore dispensing any distro provided blobs.
+
+== Directory structure
+
+=== ctng_defconfig
+
+Contains crosstool-ng defconfigs. To generate those, do:
+
+....
+# Generates the base config.
+./build-ctng
+cd crosstool-ng
+./ct-ng menuconfig
+./ct-ng savedefconfig
+cp defconfig ../../ctng_defconfig/<yourname>
+....

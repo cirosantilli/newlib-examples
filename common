@@ -50,6 +50,8 @@ common_setup() {
       common_qemu_out_dir="${common_out_dir}/qemu"
     common_gem5_dir="${common_root_dir}/gem5"
     common_qemu_dir="${common_root_dir}/qemu"
+    common_ctng_out_dir="${common_out_dir}/ctng"
+      common_ctng_bin_dir="${common_ctng_out_dir}/${common_prefix}/bin"
   common_qemu_exec_basename="qemu-system-${common_arch}"
   common_qemu_exec="${common_qemu_out_dir}/${common_arch}-softmmu/${common_qemu_exec_basename}"
   common_qemu_target="${common_arch}-softmmu"
