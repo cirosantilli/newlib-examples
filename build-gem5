@@ -24,4 +24,4 @@ mkdir -p "${common_gem5_build_dir}"
 scons -j "$(nproc)" --ignore-style "${common_gem5_exe}"
 make -C util/term
 cp util/term/m5term "${common_gem5_m5term}"
-touch "${common_gem5_fake_iso}"
+printf '%512s' | tr ' ' 'a' > "${common_gem5_fake_iso}"

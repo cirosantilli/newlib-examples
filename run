@@ -33,22 +33,25 @@ if [ $# -gt 1 ]; then
 else
   gem5_src_dir="$gem5_build_dir"
 fi
-"${common_gem5_exec}" \
-  -d "${common_gem5_m5out_dir}" \
-  --debug-file=trace.txt \
-  --debug-flags='Exec' \
-  "${common_gem5_dir}/configs/example/fs.py" \
-  --bare-metal \
-  --disk-image="${common_gem5_fake_iso}" \
-  --kernel="${common_bin}" \
-  --machine-type=RealView_PBX \
-  --mem-size=256MB \
-;
+cmd="\
+'${common_gem5_exec}' \\
+-d '${common_gem5_m5out_dir}' \\
+--debug-file=trace.txt \\
+--debug-flags='Exec' \\
+'${common_gem5_dir}/configs/example/fs.py' \\
+--bare-metal \\
+--disk-image='${common_gem5_fake_iso}' \\
+--kernel='${common_elf}' \\
+--machine-type=RealView_PBX \\
+--mem-size=256MB \\
+"
 else
   if "$host"; then
     qemu_exec="$common_qemu_exec_basename"
   else
     qemu_exec="$common_qemu_exec"
   fi
-  "$qemu_exec" -M realview-pb-a8 -serial stdio -kernel "$common_bin"
+  cmd="'$qemu_exec' -M realview-pb-a8 -serial stdio -kernel '$common_bin'"
 fi
+echo "$cmd"
+eval "$cmd"

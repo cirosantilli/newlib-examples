@@ -9,7 +9,7 @@
 :toclevels: 6
 :toc-title:
 
-Run one command, get bare metal arm UART minimal examples that run on QEMU, written in C using the C standard library via Newlib, with a clean toolchain built with Crosstool-NG. Tested on Ubuntu 18.04.
+Run one command, get bare metal arm UART minimal examples that run on QEMU or gem5, written in C using the C standard library via Newlib, with a clean toolchain built with Crosstool-NG. Tested on Ubuntu 18.04.
 
 == Getting started
 
@@ -44,7 +44,7 @@ This example illustrates the following syscall implementations:
 * `write` to give UARToutput
 * `sbrk` for `malloc`
 
-TODO WIP: Run on `gem5` instead of QEMU:
+Run on `gem5` instead of QEMU:
 
 ....
 ./build-gem5
