@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
 debug=false
+debug_vm=
 gem5=false
 host=false
 OPTIND=1
-while getopts a:dhgt OPT; do
+while getopts a:Ddhgt OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
+      ;;
+    D)
+      debug_vm="gdb -q -ex start -args \\
+"
       ;;
     d)
       debug=true
@@ -38,6 +43,7 @@ else
   gem5_src_dir="$gem5_build_dir"
 fi
 cmd="\
+${debug_vm} \
 '${common_gem5_exec}' \\
 -d '${common_gem5_m5out_dir}' \\
 --debug-file=trace.txt \\
@@ -62,9 +68,12 @@ else
     qemu_exec="$common_qemu_exec"
   fi
   cmd="\
+${debug_vm} \
 '${qemu_exec}' \\
 -M '${common_qemu_machine}' \\
+-cpu '${common_mcpu}' \\
 -kernel '${common_bin}' \\
+-nographic \\
 -serial mon:stdio \\
 ${debug_flags} \
 "

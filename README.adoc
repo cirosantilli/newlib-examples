@@ -52,6 +52,16 @@ This example illustrates the following Newlib syscall implementations:
 * `write` to give UART output
 * `sbrk` for `malloc`
 
+=== ARMv8
+
+TODO get working.
+
+Use ARMv8 intead of ARMv7:
+
+....
+./build-ctng -aA && ./build-qemu -aA && ./build-samples -aA && ./run -aA
+....
+
 === GDB
 
 TODO get working.
@@ -170,4 +180,45 @@ cd crosstool-ng
 ./ct-ng menuconfig
 ./ct-ng savedefconfig
 cp defconfig ../../ctng_defconfig/<yourname>
+....
+
+== How to find the UART address
+
+Enter the QEMU console:
+
+....
+Ctrl-X C
+....
+
+Then do:
+
+....
+info qtree
+....
+
+And look for `pl011`:
+
+....
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 1
+    chardev = ""
+    mmio 000000001000c000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 1
+    chardev = ""
+    mmio 000000001000b000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 1
+    chardev = ""
+    mmio 000000001000a000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 1
+    chardev = "serial0"
+    mmio 0000000010009000/0000000000001000
+....
+
+Then pick the one with a `chardev`, and so we find the address:
+
+....
+0000000010009000
 ....

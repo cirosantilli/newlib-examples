@@ -20,7 +20,7 @@ export PATH="${common_ctng_bin_dir}:${PATH}"
 CFLAGS="-ggdb3 -mcpu=${common_mcpu} -O0"
 mkdir -p "${common_samples_out_dir}"
 "${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
-"${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/startup.o" -std=c99 "${common_root_dir}/startup.S"
+"${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/startup.o" -std=c99 "${common_root_dir}/startup_${common_arch}.S"
 "${common_prefix}-gcc" ${CFLAGS} -c -nostartfiles -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
 "${common_prefix}-gcc" \
   ${CFLAGS} \
