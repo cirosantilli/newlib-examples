@@ -2,10 +2,10 @@
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
 debug=false
 debug_vm=
-gem5=false
+gem5_flags=
 host=false
 OPTIND=1
-while getopts a:Ddhgt OPT; do
+while getopts a:DdG:ght OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
@@ -17,8 +17,11 @@ while getopts a:Ddhgt OPT; do
     d)
       debug=true
       ;;
+    G)
+      gem5_flags="$OPTARG"
+      ;;
     g)
-      gem5=true
+      common_gem5=true
       ;;
     h)
       host=true
@@ -34,13 +37,13 @@ done
 shift "$(($OPTIND - 1))"
 common_setup
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if "$gem5"; then
-cmd="\
+if "$common_gem5"; then
+  cmd="\
 ${debug_vm} \
 '${common_gem5_exec}' \\
 -d '${common_gem5_m5out_dir}' \\
 --debug-file=trace.txt \\
---debug-flags='Exec' \\
+${gem5_flags} \\
 '${common_gem5_dir}/configs/example/fs.py' \\
 --bare-metal \\
 --disk-image='${common_gem5_fake_iso}' \\

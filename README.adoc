@@ -83,6 +83,7 @@ The address is `0x40000000`, which is what we set the `ENTRY` to in link:link.ld
 Run on `gem5` instead of QEMU:
 
 ....
+./build-samples -g
 ./build-gem5
 ./run -g
 ....
@@ -93,7 +94,37 @@ On another shell:
 ./gem5-shell
 ....
 
-TODO: this is printing newlines without automatic carriage return `\r` as in:
+The rebuild is necessary because the UART and entry addresses are different for the available gem5 machines, and we do not have magic memory loaded DTBs to take care of that for us.
+
+Trace executed instructions:
+
+....
+./run -G --debug-flags='Exec,-ExecSymbol' -g
+less out/arm/m5out/trace.txt
+....
+
+GDB step debug:
+
+....
+./run -g
+./rungdb -g
+....
+
+==== gem5 aarch64
+
+TODO blows up. The trace contains just:
+
+....
+      0: system.cpu T0 : 0x10000    :   adcle   r0, r0, #1048576 : IntAlu : Predicated False
+    500: system.cpu T0 : 0x10004    :   ldrle   r1, [r8, #-65]   : MemRead : Predicated False
+   1000: system.cpu T0 : 0x10008    :   strle   r3, [r3, #-4063] : MemWrite : Predicated False
+....
+
+which is at the expected address, but not the first expected instruction from link:startup_aarch64[], which must mean that the image is not being loaded properly into memory.
+
+==== gem5 carriage return
+
+TODO: our example is printing newlines without automatic carriage return `\r` as in:
 
 ....
 enter a character
@@ -151,7 +182,7 @@ It is nice when thing just work.
 
 But you can also learn a thing or two from how I actually made them work in the first place.
 
-=== How to find the UART address
+=== Find the UART address
 
 Enter the QEMU console:
 
@@ -169,6 +200,13 @@ And look for `pl011`:
 
 ....
     0000000009000000-0000000009000fff (prio 0, i/o): pl011
+....
+
+On gem5, it is easy to find it on the source. We are using the machine `RealView_PBX`, and a quick grep leads us to: https://github.com/gem5/gem5/blob/a27ce59a39ec8fa20a3c4e9fa53e9b3db1199e91/src/dev/arm/RealView.py#L615
+
+....
+class RealViewPBX(RealView):
+    uart = Pl011(pio_addr=0x10009000, int_num=44)
 ....
 
 === aarch64 NEON setup

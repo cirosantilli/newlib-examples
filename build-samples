@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
 OPTIND=1
-while getopts a:p: OPT; do
+while getopts a:gp: OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
+      ;;
+    g)
+      common_gem5=true
       ;;
     p)
       common_prefix="$OPTARG"
@@ -18,14 +21,22 @@ shift "$(($OPTIND - 1))"
 common_setup
 export PATH="${common_ctng_bin_dir}:${PATH}"
 CFLAGS="-ggdb3 -mcpu=${common_mcpu} -O0"
+if "$common_gem5"; then
+  entry_address=0x10000
+  uart_address=0x10009000
+else
+  entry_address=0x40000000
+  uart_address=0x09000000
+fi
 mkdir -p "${common_samples_out_dir}"
 "${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
 "${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/startup.o" -std=c99 "${common_root_dir}/startup_${common_arch}.S"
-"${common_prefix}-gcc" ${CFLAGS} -c -nostartfiles -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
+"${common_prefix}-gcc" ${CFLAGS} -c -DUART0_ADDR="$uart_address" -nostartfiles -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
 "${common_prefix}-gcc" \
   ${CFLAGS} \
   -ggdb3 \
   -nostartfiles \
+  -Wl,--section-start=.ro="$entry_address" \
   -o "$common_elf" \
   -T"${common_root_dir}/link.ld" \
   "${common_samples_out_dir}/startup.o" \
