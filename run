@@ -35,13 +35,6 @@ shift "$(($OPTIND - 1))"
 common_setup
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if "$gem5"; then
-
-gem5_build_dir="${1:-../gem5}"
-if [ $# -gt 1 ]; then
-  gem5_src_dir="$2"
-else
-  gem5_src_dir="$gem5_build_dir"
-fi
 cmd="\
 ${debug_vm} \
 '${common_gem5_exec}' \\
@@ -53,7 +46,7 @@ ${debug_vm} \
 --disk-image='${common_gem5_fake_iso}' \\
 --kernel='${common_elf}' \\
 --machine-type=RealView_PBX \\
---mem-size=256MB \\
+--mem-size=${common_memory}B \\
 "
 else
   if "$debug"; then
@@ -72,9 +65,10 @@ ${debug_vm} \
 '${qemu_exec}' \\
 -M '${common_qemu_machine}' \\
 -cpu '${common_mcpu}' \\
--kernel '${common_bin}' \\
+-kernel '${common_elf}' \\
 -nographic \\
 -serial mon:stdio \\
+-m ${common_memory} \\
 ${debug_flags} \
 "
 fi

@@ -21,7 +21,7 @@ common_setup
 export PATH="/usr/lib/ccache:${PATH}"
 cd "${common_gem5_dir}"
 mkdir -p "${common_gem5_build_dir}"
-scons -j "$(nproc)" --ignore-style "${common_gem5_exe}"
+scons -j "$(nproc)" --ignore-style "${common_gem5_exec}"
 make -C util/term
 cp util/term/m5term "${common_gem5_m5term}"
 printf '%512s' | tr ' ' 'a' > "${common_gem5_fake_iso}"

@@ -2,8 +2,7 @@
 
 enum {
     UART_FR_RXFE = 0x10,
-    UART_FR_TXFF = 0x20,
-    UART0_ADDR = 0x10009000,
+    UART0_ADDR = 0x09000000,
 };
 
 #define UART_DR(baseaddr) (*(unsigned int *)(baseaddr))
@@ -22,12 +21,12 @@ int _open(const char *name, int flags, int mode) { return -1; }
 
 int _read(int file, char *ptr, int len) {
     int todo;
-    if(len == 0)
+    if (len == 0)
         return 0;
-    while(UART_FR(UART0_ADDR) & UART_FR_RXFE);
+    while (UART_FR(UART0_ADDR) & UART_FR_RXFE);
     *ptr++ = UART_DR(UART0_ADDR);
-    for(todo = 1; todo < len; todo++) {
-        if(UART_FR(UART0_ADDR) & UART_FR_RXFE) {
+    for (todo = 1; todo < len; todo++) {
+        if (UART_FR(UART0_ADDR) & UART_FR_RXFE) {
             break;
         }
         *ptr++ = UART_DR(UART0_ADDR);

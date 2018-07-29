@@ -3,17 +3,15 @@ set -eu
 common_arch=arm
 common_gdb_port=1234
 common_gem5_build_type=opt
+common_memory=256M
 common_prefix=
 common_setup() {
   case "$common_arch" in
     a|arm)
       common_arch=arm
       common_gem5_arch=ARM
-      common_mcpu=cortex-a8
-      common_qemu_machine=realview-pb-a8
-      # TODO.
-      #common_mcpu=cortex-a15
-      #common_qemu_machine=virt
+      common_mcpu=cortex-a15
+      common_qemu_machine=virt
       ;;
     A|aarch64)
       common_arch=aarch64

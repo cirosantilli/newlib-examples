@@ -56,15 +56,57 @@ This example illustrates the following Newlib syscall implementations:
 
 TODO get working.
 
-Use ARMv8 intead of ARMv7:
+Use ARMv8 instead of ARMv7:
 
 ....
 ./build-ctng -aA && ./build-qemu -aA && ./build-samples -aA && ./run -aA
 ....
 
-=== GDB
+How it fails currently: prints:
 
-TODO get working.
+....
+enter a character
+....
+
+then you enter a character, then it goes into an interrupt loop.
+
+The interrupt loop happens inside the:
+
+....
+printf("got: %c\n", c);
+....
+
+because GCC compiled it into:
+
+....
+str    q0, [sp, #80]
+....
+
+which uses NEON registers, which must be raising an exception? TODO details. Related: https://stackoverflow.com/questions/19231197/enable-neon-on-arm-cortex-a-series
+
+This can be found by logging instructions with:
+
+....
+while(1)
+stepi
+end
+....
+
+or by hacking the QEMU CLI to contain:
+
+.....
+-D log.log -d in_asm
+.....
+
+The first `printf`:
+
+....
+printf("enter a character\n");
+....
+
+does not blow up because GCC compiles it into `puts` directly since it has no arguments.
+
+=== GDB
 
 Shell 1:
 
@@ -78,42 +120,9 @@ Shell 2:
 ./rungdb
 ....
 
-Now QEMU is at the instruction: `0x70000000`.
+Now QEMU is at the first instruction of link:startup_arm.S[], and you can step debug as usual.
 
-If I do:
-
-....
-b mystart
-c
-....
-
-it never breaks there.
-
-But if I do:
-
-....
-x/16i 0x10000
-....
-
-it shows the correct dissassembly as in `mystart`, so the memory was loaded there.
-
-And if I do:
-
-....
-set $pc = 0x10000
-....
-
-everything works normally from there on!
-
-Howver:
-
-....
-x/16i $pc
-....
-
-does not show the instructions from `mystart`
-
-So how is that possible? It is as if QEMU were making two copies of my assembly and starting out at a custom bootloader code, and then using the second copy of code instead of the one with the addresses of the object file.
+The address is `0x40000000`, which is what we set the `ENTRY` to in link:link.ld[]. If you change that, it will still work: QEMU just parses the ELF entry field, places the code there in memory, and sets PC to it.
 
 === gem5
 
@@ -193,32 +202,11 @@ Ctrl-X C
 Then do:
 
 ....
-info qtree
+info mtree
 ....
 
 And look for `pl011`:
 
 ....
-  dev: pl011, id ""
-    gpio-out "sysbus-irq" 1
-    chardev = ""
-    mmio 000000001000c000/0000000000001000
-  dev: pl011, id ""
-    gpio-out "sysbus-irq" 1
-    chardev = ""
-    mmio 000000001000b000/0000000000001000
-  dev: pl011, id ""
-    gpio-out "sysbus-irq" 1
-    chardev = ""
-    mmio 000000001000a000/0000000000001000
-  dev: pl011, id ""
-    gpio-out "sysbus-irq" 1
-    chardev = "serial0"
-    mmio 0000000010009000/0000000000001000
-....
-
-Then pick the one with a `chardev`, and so we find the address:
-
-....
-0000000010009000
+    0000000009000000-0000000009000fff (prio 0, i/o): pl011
 ....
