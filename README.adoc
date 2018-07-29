@@ -54,57 +54,11 @@ This example illustrates the following Newlib syscall implementations:
 
 === ARMv8
 
-TODO get working.
-
 Use ARMv8 instead of ARMv7:
 
 ....
 ./build-ctng -aA && ./build-qemu -aA && ./build-samples -aA && ./run -aA
 ....
-
-How it fails currently: prints:
-
-....
-enter a character
-....
-
-then you enter a character, then it goes into an interrupt loop.
-
-The interrupt loop happens inside the:
-
-....
-printf("got: %c\n", c);
-....
-
-because GCC compiled it into:
-
-....
-str    q0, [sp, #80]
-....
-
-which uses NEON registers, which must be raising an exception? TODO details. Related: https://stackoverflow.com/questions/19231197/enable-neon-on-arm-cortex-a-series
-
-This can be found by logging instructions with:
-
-....
-while(1)
-stepi
-end
-....
-
-or by hacking the QEMU CLI to contain:
-
-.....
--D log.log -d in_asm
-.....
-
-The first `printf`:
-
-....
-printf("enter a character\n");
-....
-
-does not blow up because GCC compiles it into `puts` directly since it has no arguments.
 
 === GDB
 
@@ -191,7 +145,13 @@ cd crosstool-ng
 cp defconfig ../../ctng_defconfig/<yourname>
 ....
 
-== How to find the UART address
+== How we got some stuff to work
+
+It is nice when thing just work.
+
+But you can also learn a thing or two from how I actually made them work in the first place.
+
+=== How to find the UART address
 
 Enter the QEMU console:
 
@@ -210,3 +170,68 @@ And look for `pl011`:
 ....
     0000000009000000-0000000009000fff (prio 0, i/o): pl011
 ....
+
+=== aarch64 NEON setup
+
+Inside link:startup_aarch64.S[] there is a chunk of code called "NEON setup".
+
+Without that, the `printf`:
+
+....
+printf("got: %c\n", c);
+....
+
+compiled to a:
+
+....
+str    q0, [sp, #80]
+....
+
+which uses NEON registers, and goes into an exception loop.
+
+It was a bit confusing because there was a previous `printf`:
+
+....
+printf("enter a character\n");
+....
+
+which did not blow up because GCC compiles it into `puts` directly since it has no arguments, and that does not generate NEON instructions.
+
+The last instructions ran was found with:
+
+....
+while(1)
+stepi
+end
+....
+
+or by hacking the QEMU CLI to contain:
+
+.....
+-D log.log -d in_asm
+.....
+
+I could not find any previous NEON instruction executed so this led me to suspect that some NEON initialization was required:
+
+* http://infocenter.arm.com/help/topic/com.arm.doc.dai0527a/DAI0527A_baremetal_boot_code_for_ARMv8_A_processors.pdf "Bare-metal Boot Code for ARMv8-A Processors"
+* https://community.arm.com/processors/f/discussions/5409/how-to-enable-neon-in-cortex-a8
+* https://stackoverflow.com/questions/19231197/enable-neon-on-arm-cortex-a-series
+
+We then tried to copy the code from the "Bare-metal Boot Code for ARMv8-A Processors" document:
+
+....
+// Disable trapping of accessing in EL3 and EL2.
+MSR CPTR_EL3, XZR
+MSR CPTR_EL3, XZR
+// Disable access trapping in EL1 and EL0.
+MOV X1, #(0x3 << 20) // FPEN disables trapping to EL1.
+MSR CPACR_EL1, X1
+ISB
+....
+
+but it entered an exception loop at `MSR CPTR_EL3, XZR`.
+
+We then found out that QEMU starts in EL1, and so we kept just the EL1 part, and it worked. Related:
+
+* https://stackoverflow.com/questions/42824706/qemu-system-aarch64-entering-el1-when-emulating-a53-power-up
+* https://stackoverflow.com/questions/37299524/neon-support-in-armv8-system-mode-qemu
