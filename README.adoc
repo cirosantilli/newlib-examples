@@ -9,7 +9,7 @@
 :toclevels: 6
 :toc-title:
 
-Run one command, get bare metal arm UART minimal examples that run on QEMU or gem5, written in C using the C standard library via Newlib, with a clean toolchain built with Crosstool-NG. Tested on Ubuntu 18.04.
+Bare metal arm ARMv7 and aarch64 ARMv8 UART minimal examples that run on QEMU or gem5. Uses the C standard library via Newlib built from Crosstool-NG. GDB setup just works. Tested on Ubuntu 18.04.
 
 toc::[]
 
