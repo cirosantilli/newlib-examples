@@ -1,16 +1,16 @@
 ENTRY(mystart)
 SECTIONS
 {
-  .ro : {
+  . = 0x80000000;
+  .text : {
     */startup.o(.text)
     *(.text)
     *(.rodata)
+    *(.data)
+    *(COMMON)
   }
-  .rw : {
-      *(.data)
-      *(.bss)
-      *(COMMON)
-  }
+  /* gem5 uses the bss as a measure of the kernel size. */
+  .bss : { *(.bss) }
   heap_low = .;
   . = . + 0x1000000;
   heap_top = .;

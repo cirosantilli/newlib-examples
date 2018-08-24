@@ -48,7 +48,7 @@ ${gem5_flags} \\
 --bare-metal \\
 --disk-image='${common_gem5_fake_iso}' \\
 --kernel='${common_elf}' \\
---machine-type=RealView_PBX \\
+--machine-type=VExpress_GEM5_V1 \\
 --mem-size=${common_memory}B \\
 "
 else

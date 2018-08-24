@@ -23,7 +23,7 @@ export PATH="${common_ctng_bin_dir}:${PATH}"
 CFLAGS="-ggdb3 -mcpu=${common_mcpu} -O0"
 if "$common_gem5"; then
   entry_address=0x10000
-  uart_address=0x10009000
+  uart_address=0x1c090000
 else
   entry_address=0x40000000
   uart_address=0x09000000
