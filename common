@@ -2,6 +2,7 @@
 set -eu
 common_arch=arm
 common_gem5=false
+common_gem5_variant=default
 common_gem5_build_type=opt
 common_memory=256M
 common_prefix=
@@ -50,10 +51,11 @@ common_setup() {
     common_out_dir="${common_root_dir}/out"
       common_out_arch_dir="${common_out_dir}/${common_arch}"
         common_gem5_m5out_dir="${common_out_arch_dir}/m5out"
+        common_qemu_run_dir="${common_out_arch_dir}/qemu"
         common_samples_out_dir="${common_out_arch_dir}/samples/${common_simulator_name}"
           common_bin="${common_samples_out_dir}/test.bin"
           common_elf="${common_samples_out_dir}/test.elf"
-      common_gem5_out_dir="${common_out_dir}/gem5"
+      common_gem5_out_dir="${common_out_dir}/gem5/${common_gem5_variant}"
         common_gem5_build_dir="${common_gem5_out_dir}/build"
           common_gem5_exec="${common_gem5_build_dir}/${common_gem5_arch}/gem5.${common_gem5_build_type}"
         common_gem5_fake_iso="${common_gem5_out_dir}/fake.iso"

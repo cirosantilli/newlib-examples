@@ -4,8 +4,9 @@ debug=false
 debug_vm=
 gem5_flags=
 host=false
+trace=false
 OPTIND=1
-while getopts a:DdG:ght OPT; do
+while getopts a:Dde:G:ghTt: OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
@@ -17,14 +18,21 @@ while getopts a:DdG:ght OPT; do
     d)
       debug=true
       ;;
+    e)
+      common_gem5_variant="$OPTARG"
+      ;;
     G)
-      gem5_flags="$OPTARG"
+      gem5_flags="${OPTARG} \\
+"
       ;;
     g)
       common_gem5=true
       ;;
     h)
       host=true
+      ;;
+    T)
+      trace=true
       ;;
     t)
       common_gem5_build_type="$OPTARG"
@@ -36,8 +44,11 @@ while getopts a:DdG:ght OPT; do
 done
 shift "$(($OPTIND - 1))"
 common_setup
-root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if "$common_gem5"; then
+  if "$trace"; then
+    gem5_flags="${gem5_flags}--debug-flags=Exec \\
+"
+  fi
   cmd="\
 ${debug_vm} \
 '${common_gem5_exec}' \\
@@ -63,16 +74,25 @@ else
   else
     qemu_exec="$common_qemu_exec"
   fi
+  if "$trace"; then
+    trace_cmd="${gem5_flags}-d in_asm \\
+"
+  else
+    trace_cmd=
+  fi
+  mkdir -p "${common_qemu_run_dir}"
   cmd="\
-${debug_vm} \
+${debug_vm}\
 '${qemu_exec}' \\
 -M '${common_qemu_machine}' \\
 -cpu '${common_mcpu}' \\
+-D '${common_qemu_run_dir}/trace.txt' \\
 -kernel '${common_elf}' \\
 -nographic \\
 -serial mon:stdio \\
 -m ${common_memory} \\
-${debug_flags} \
+${trace_cmd}\
+${debug_flags}\
 "
 fi
 cmd="${cmd} $@"

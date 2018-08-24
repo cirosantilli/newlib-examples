@@ -3,10 +3,13 @@
 arch=aarch64
 build_type=opt
 OPTIND=1
-while getopts a:t: OPT; do
+while getopts a:e:t: OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
+      ;;
+    e)
+      common_gem5_variant="$OPTARG"
       ;;
     t)
       common_gem5_build_type="$OPTARG"
