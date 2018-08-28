@@ -4,9 +4,9 @@ debug=false
 debug_vm=
 gem5_flags=
 host=false
-trace=false
+trace=
 OPTIND=1
-while getopts a:Dde:G:ghTt: OPT; do
+while getopts a:Dde:G:ghT:t: OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
@@ -32,7 +32,7 @@ while getopts a:Dde:G:ghTt: OPT; do
       host=true
       ;;
     T)
-      trace=true
+      trace="$OPTARG"
       ;;
     t)
       common_gem5_build_type="$OPTARG"
@@ -45,8 +45,8 @@ done
 shift "$(($OPTIND - 1))"
 common_setup
 if "$common_gem5"; then
-  if "$trace"; then
-    gem5_flags="${gem5_flags}--debug-flags=Exec \\
+  if [ -n "$trace" ]; then
+    gem5_flags="${gem5_flags}--debug-flags=${trace} \\
 "
   fi
   cmd="\

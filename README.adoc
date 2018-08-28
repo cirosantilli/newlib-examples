@@ -97,7 +97,7 @@ The rebuild is necessary because the UART and entry addresses are different for 
 Trace executed instructions:
 
 ....
-./run -G --debug-flags='Exec,-ExecSymbol' -g
+./run -T Exec,-ExecSymbol -g
 less out/arm/m5out/trace.txt
 ....
 
@@ -154,6 +154,15 @@ sudo apt-get install gcc-arm-none-eabi qemu-system-arm
 ....
 
 Shame on you.
+
+== Debug the VM
+
+gem5:
+
+....
+./build-gem5 -e debug -t debug
+./run -e debug -D -g -t debug
+....
 
 == Why this is cool
 
