@@ -1,7 +1,6 @@
 ENTRY(mystart)
 SECTIONS
 {
-  . = 0x80000000;
   .text : {
     */startup.o(.text)
     *(.text)

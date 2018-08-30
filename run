@@ -6,7 +6,7 @@ gem5_flags=
 host=false
 trace=
 OPTIND=1
-while getopts a:Dde:G:ghT:t: OPT; do
+while getopts a:Dde:G:ghm:T:t: OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
@@ -22,11 +22,14 @@ while getopts a:Dde:G:ghT:t: OPT; do
       common_gem5_variant="$OPTARG"
       ;;
     G)
-      gem5_flags="${OPTARG} \\
+      gem5_flags="$OPTARG \\
 "
       ;;
     g)
       common_gem5=true
+      ;;
+    m)
+      common_machine="$OPTARG"
       ;;
     h)
       host=true
@@ -59,7 +62,7 @@ ${gem5_flags} \\
 --bare-metal \\
 --disk-image='${common_gem5_fake_iso}' \\
 --kernel='${common_elf}' \\
---machine-type=VExpress_GEM5_V1 \\
+--machine-type='${common_machine}' \\
 --mem-size=${common_memory}B \\
 "
 else
@@ -84,7 +87,7 @@ else
   cmd="\
 ${debug_vm}\
 '${qemu_exec}' \\
--M '${common_qemu_machine}' \\
+-M '${common_machine}' \\
 -cpu '${common_mcpu}' \\
 -D '${common_qemu_run_dir}/trace.txt' \\
 -kernel '${common_elf}' \\

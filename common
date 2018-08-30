@@ -12,18 +12,11 @@ common_setup() {
       common_arch=arm
       common_gem5_arch=ARM
       common_mcpu=cortex-a15
-      common_qemu_machine=virt
       ;;
     A|aarch64)
       common_arch=aarch64
       common_mcpu=cortex-a57
       common_gem5_arch=ARM
-      common_qemu_machine=virt
-      ;;
-    x|x86_64)
-      common_arch=x86_64
-      common_mcpu=TODO
-      common_gem5_arch=X86
       ;;
     *)
       printf "unknown arch: ${arch}\n" 1>&2
@@ -43,16 +36,22 @@ common_setup() {
   if "$common_gem5"; then
     common_gdb_port=1234
     common_simulator_name=gem5
+    if [ -z "${common_machine:-}" ]; then
+      common_machine=VExpress_GEM5_V1
+    fi
   else
     common_gdb_port=1234
     common_simulator_name=qemu
+    if [ -z "${common_machine:-}" ]; then
+      common_machine=virt
+    fi
   fi
   common_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     common_out_dir="${common_root_dir}/out"
       common_out_arch_dir="${common_out_dir}/${common_arch}"
         common_gem5_m5out_dir="${common_out_arch_dir}/m5out"
         common_qemu_run_dir="${common_out_arch_dir}/qemu"
-        common_samples_out_dir="${common_out_arch_dir}/samples/${common_simulator_name}"
+        common_samples_out_dir="${common_out_arch_dir}/samples/${common_simulator_name}/${common_machine}"
           common_bin="${common_samples_out_dir}/test.bin"
           common_elf="${common_samples_out_dir}/test.elf"
       common_gem5_out_dir="${common_out_dir}/gem5/${common_gem5_variant}"
