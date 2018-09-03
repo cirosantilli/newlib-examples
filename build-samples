@@ -28,7 +28,7 @@ if "$common_gem5"; then
   if [ "$common_machine" = VExpress_GEM5_V1 ]; then
     entry_address=0x80000000
     uart_address=0x1c090000
-  elif [ "$common_machine" = RealView_PBX ]; then
+  elif [ "$common_machine" = RealViewPBX ]; then
     entry_address=0x10000
     uart_address=0x10009000
   else

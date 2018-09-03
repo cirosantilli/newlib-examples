@@ -92,7 +92,7 @@ On another shell:
 ./gem5-shell
 ....
 
-The rebuild is necessary because the UART and entry addresses are different for the available gem5 machines, and we do not have magic memory loaded DTBs to take care of that for us.
+The rebuild of the examples is necessary because the UART and entry addresses are different for the available gem5 machines, and we do not have magic memory loaded DTBs to take care of that for us.
 
 Trace executed instructions:
 
@@ -107,6 +107,19 @@ GDB step debug:
 ./run -g
 ./rungdb -g
 ....
+
+==== gem5 machine
+
+The default machine is `VExpress_GEM5_V1`, but that can be changed with:
+
+....
+./build-samples -g -m RealViewPBX
+./build-samples -g -m VExpress_GEM5_V1
+./run -g -m RealViewPBX
+./run -g -m VExpress_GEM5_V1
+....
+
+A separate sample rebuild is required for each machine type.
 
 ==== gem5 aarch64
 
