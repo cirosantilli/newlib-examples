@@ -181,11 +181,43 @@ Enabled with the crosstool-ng configuration:
 CT_GDB_CROSS_SIM=y
 ....
 
+which by grepping crosstool-ng we can see does on GDB:
+
+....
+./configure --enable-sim
+....
+
+Those are not set by default on `gdb-multiarch` in Ubuntu 16.04.
+
 Bibliography:
 
 * https://sourceware.org/gdb/onlinedocs/gdb/Target-Commands.html
 * https://stackoverflow.com/questions/49470659/arm-none-eabi-gdb-undefined-target-command-sim
 * http://cs107e.github.io/guides/gdb/
+
+==== GDB builtin CPU simulator userland
+
+Since I had this compiled, I also decided to try it out on userland.
+
+I was also able to run a freestanding Linux userland example on it: https://github.com/cirosantilli/arm-assembly-cheat/blob/cd232dcaf32c0ba6399b407e0b143d19b6ec15f4/v7/linux/hello.S
+
+It just ignores the `swi` however, and does not forward syscalls to the host like QEMU does.
+
+Then I tried a glibc example: https://github.com/cirosantilli/arm-assembly-cheat/blob/cd232dcaf32c0ba6399b407e0b143d19b6ec15f4/v7/mov.S
+
+First it wouldn't break, so I added `-static` to the `Makefile`, and then it started failing with:
+
+....
+Unhandled v6 thumb insn
+....
+
+Doing:
+
+....
+help architecture
+....
+
+shows ARM version up to `armv6`, so maybe `armv6` is not implemented?
 
 === Ubuntu distro toolchain
 
