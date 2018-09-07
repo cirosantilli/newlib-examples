@@ -40,10 +40,10 @@ else
   uart_address=0x09000000
 fi
 mkdir -p "${common_samples_out_dir}"
-"${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.c"
-"${common_prefix}-gcc" ${CFLAGS} -c -o "${common_samples_out_dir}/startup.o" -std=c99 "${common_root_dir}/startup_${common_arch}.S"
-"${common_prefix}-gcc" ${CFLAGS} -c -DUART0_ADDR="$uart_address" -nostartfiles -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
-"${common_prefix}-gcc" \
+"${common_prefix}-g++" ${CFLAGS} -c -o "${common_samples_out_dir}/main.o" "${common_root_dir}/main.cpp"
+"${common_prefix}-g++" ${CFLAGS} -c -o "${common_samples_out_dir}/startup.o" -std=c99 "${common_root_dir}/startup_${common_arch}.S"
+"${common_prefix}-g++" ${CFLAGS} -c -DUART0_ADDR="$uart_address" -nostartfiles -o "${common_samples_out_dir}/syscalls.o" "${common_root_dir}/syscalls.c"
+"${common_prefix}-g++" \
   ${CFLAGS} \
   -ggdb3 \
   -nostartfiles \
