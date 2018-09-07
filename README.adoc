@@ -156,6 +156,37 @@ telnet localhost 3456
 
 it does add the carriage returns automatically.
 
+=== GDB builtin CPU simulator
+
+TODO: any advantage over QEMU? I doubt it, mostly using it as as toy for now:
+
+Without runnint `./run`, do directly:
+
+....
+./rungdb -s
+....
+
+Then inside GDB:
+
+....
+load
+starti
+....
+
+and now you can debug normally.
+
+Enabled with the crosstool-ng configuration:
+
+....
+CT_GDB_CROSS_SIM=y
+....
+
+Bibliography:
+
+* https://sourceware.org/gdb/onlinedocs/gdb/Target-Commands.html
+* https://stackoverflow.com/questions/49470659/arm-none-eabi-gdb-undefined-target-command-sim
+* http://cs107e.github.io/guides/gdb/
+
 === Ubuntu distro toolchain
 
 If you are really lazy, and don't want to wait 10 minutes for the toolchain or QEMU to build, you can also do just:

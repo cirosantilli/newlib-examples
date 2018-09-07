@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common"
+sim=false
 OPTIND=1
-while getopts a:g OPT; do
+while getopts a:gs OPT; do
   case "$OPT" in
     a)
       common_arch="$OPTARG"
       ;;
     g)
       common_gem5=true
+      ;;
+    s)
+      sim=true
       ;;
     ?)
       exit 2
@@ -16,10 +20,15 @@ while getopts a:g OPT; do
 done
 shift "$(($OPTIND - 1))"
 common_setup
+if "$sim"; then
+  target='sim'
+else
+  target="remote localhost:${common_gdb_port}"
+fi
 cmd="\
 '${common_ctng_bin_dir}/${common_prefix}-gdb' \\
 -q \\
--ex 'target remote localhost:${common_gdb_port}' \\
+-ex 'target ${target}' \\
 '${common_elf}' \\
 "
 echo "$cmd"
