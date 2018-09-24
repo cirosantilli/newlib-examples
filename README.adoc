@@ -9,6 +9,8 @@
 :toclevels: 6
 :toc-title:
 
+MOVED TO: https://github.com/cirosantilli/linux-kernel-module-cheat/tree/595e52bb5cad842045127d56a978bd59a98bd45b#baremetal-setup
+
 Bare metal arm ARMv7 and aarch64 ARMv8 UART minimal examples that run on QEMU or gem5. Uses the C standard library via Newlib built from Crosstool-NG. GDB setup just works. Tested on Ubuntu 18.04.
 
 toc::[]
